@@ -1,6 +1,7 @@
 package dev.diena.fluxium
 
-import dev.diena.fluxium.block.ModBlocks
+import dev.diena.fluxium.block.CustomBlocks
+import dev.diena.fluxium.item.CustomItems
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.fml.common.Mod
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent
@@ -26,7 +27,8 @@ object Fluxium {
 		LOGGER.log(Level.INFO, "Hello world!")
 
 		// Register the KDeferredRegister to the mod-specific event bus
-		ModBlocks.REGISTRY.register(MOD_BUS)
+		CustomBlocks.REGISTRY.register(MOD_BUS)
+		CustomItems.REGISTRY.register(MOD_BUS)
 		MOD_BUS.addListener(::onCommonSetup)
 
 		if (FMLEnvironment.dist == Dist.CLIENT) {
@@ -42,6 +44,7 @@ object Fluxium {
 	 * Fired on the mod specific event bus.
 	 */
 	private fun onClientSetup(event: FMLClientSetupEvent) {
+		// TODO: add shader loader backend, custom model loader backend
 		LOGGER.log(Level.INFO, "Initializing client...")
 	}
 
@@ -53,6 +56,6 @@ object Fluxium {
 	}
 
 	private fun onCommonSetup(event: FMLCommonSetupEvent) {
-		LOGGER.log(Level.INFO, "Hello! This is working!")
+		LOGGER.log(Level.INFO, "welcome to a fluxuating world >:3")
 	}
 }
