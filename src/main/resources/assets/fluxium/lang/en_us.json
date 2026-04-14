@@ -1,5 +1,6 @@
 {
   "itemGroup.fluxium": "Example Mod Tab",
-  "block.fluxium.example_block": "Example Block",
-  "item.fluxium.example_item": "Example Item"
+  "block.fluxium.test_block": "Test Block",
+  "item.fluxium.test_item": "Test Item",
+  "item.fluxium.glint_item": "Glint Item"
 }
