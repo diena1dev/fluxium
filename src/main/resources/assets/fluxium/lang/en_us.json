@@ -2,5 +2,7 @@
   "itemGroup.fluxium": "Example Mod Tab",
   "block.fluxium.test_block": "Test Block",
   "item.fluxium.test_item": "Test Item",
-  "item.fluxium.glint_item": "Glint Item"
+  "item.fluxium.glint_item": "Glint Item",
+  "item.fluxium.fluxite_manipulator": "Fluxite Manipulator",
+  "item.fluxium.fluxitee_atomizer": "Fluxite Atomizer"
 }

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/debug_stick",
+  "textures": {
+    "layer0": "minecraft:item/stick"
+  }
+}
