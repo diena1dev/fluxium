@@ -5,7 +5,7 @@ plugins {
     `maven-publish`
     idea
     id("net.neoforged.moddev") version "2.0.141"
-    kotlin("jvm") version "2.0.0"
+    kotlin("jvm") version "2.3.0"
 }
 
 version = property("mod_version") as String
