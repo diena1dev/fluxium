@@ -3,6 +3,7 @@ package dev.diena.fluxium.item
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.InteractionResultHolder
+import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.Item
@@ -11,13 +12,25 @@ import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.level.Level
 
 /**
- * Factory function that receives a configured [Item.Properties] and returns
- * an [Item] instance. Use an object expression to override methods inline:
+ * Factory function that receives configured [Item.Properties] and the action
+ * lambdas, and returns an [Item] — typically a [FluxiumItem] subclass so that
+ * interaction callbacks are preserved.
+ *
  * ```kotlin
- * factory = { props -> object : Item(props) { override fun isFoil(...) = true } }
+ * factory = { props, onUse, onUseOn, onInteractEntity ->
+ *     object : FluxiumItem(props, onUse, onUseOn, onInteractEntity) {
+ *         override fun isFoil(...) = true
+ *     }
+ * }
  * ```
  */
-typealias ItemFactory = (props: Item.Properties) -> Item
+typealias ItemFactory = (
+        props: Item.Properties,
+        onUse: UseAction?,
+        onUseOn: UseOnAction?,
+        onInteractEntity: InteractEntityAction?,
+        onHurtEntity: HurtEntityAction?
+        ) -> Item
 
 /**
  * Lambda invoked when a player right-clicks with this item in the air.
@@ -28,11 +41,11 @@ typealias ItemFactory = (props: Item.Properties) -> Item
  * @return an [InteractionResultHolder] wrapping the (possibly modified) stack
  */
 typealias UseAction = (
-    level: Level,
-    player: Player,
-    hand: InteractionHand,
-    stack: ItemStack,
-) -> InteractionResultHolder<ItemStack>
+        level: Level,
+        player: Player,
+        hand: InteractionHand,
+        stack: ItemStack,
+        ) -> InteractionResultHolder<ItemStack>
 
 /**
  * Lambda invoked when a player right-clicks a block with this item.
@@ -50,11 +63,17 @@ typealias UseOnAction = (context: UseOnContext) -> InteractionResult
  * @return an [InteractionResult] indicating how the interaction was consumed
  */
 typealias InteractEntityAction = (
-    stack: ItemStack,
-    player: Player,
-    target: LivingEntity,
-    hand: InteractionHand,
-) -> InteractionResult
+        stack: ItemStack,
+        player: Player,
+        target: LivingEntity,
+        hand: InteractionHand,
+        ) -> InteractionResult
+
+typealias HurtEntityAction = (
+        stack: ItemStack,
+        target: LivingEntity,
+        source: LivingEntity
+        ) -> Boolean
 
 /**
  * An [Item] subclass that delegates interaction events to optional lambdas,
@@ -70,11 +89,12 @@ typealias InteractEntityAction = (
  * ) { stacksTo(1) }
  * ```
  */
-class FluxiumItem(
+open class FluxiumItem(
     properties: Properties,
     private val onUse: UseAction? = null,
     private val onUseOn: UseOnAction? = null,
     private val onInteractEntity: InteractEntityAction? = null,
+    private val onHitEntity: HurtEntityAction? = null,
 ) : Item(properties) {
 
     override fun use(level: Level, player: Player, hand: InteractionHand): InteractionResultHolder<ItemStack> =
@@ -93,6 +113,14 @@ class FluxiumItem(
     ): InteractionResult =
         onInteractEntity?.invoke(stack, player, target, hand)
             ?: super.interactLivingEntity(stack, player, target, hand)
+
+    override fun hurtEnemy(
+        stack: ItemStack,
+        entity1: LivingEntity,
+        entity2: LivingEntity
+    ): Boolean =
+        onHitEntity?.invoke(stack, entity1, entity2)
+            ?: super.hurtEnemy(stack, entity1, entity2)
 }
 
 
