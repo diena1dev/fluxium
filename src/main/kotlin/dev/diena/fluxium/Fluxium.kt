@@ -1,6 +1,7 @@
 package dev.diena.fluxium
 
 import dev.diena.fluxium.block.CustomBlocks
+import dev.diena.fluxium.component.ModDataComponents
 import dev.diena.fluxium.item.CustomItems
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.fml.common.Mod
@@ -26,8 +27,10 @@ object Fluxium {
 	init {
 		LOGGER.log(Level.INFO, "Hello world!")
 
-		// Register the KDeferredRegister to the mod-specific event bus
+		// Register deferred registries to the mod-specific event bus
+		ModDataComponents.REGISTRY.register(MOD_BUS)
 		CustomBlocks.REGISTRY.register(MOD_BUS)
+		CustomBlocks.ITEM_REGISTRY.register(MOD_BUS)
 		CustomItems.REGISTRY.register(MOD_BUS)
 		MOD_BUS.addListener(::onCommonSetup)
 

@@ -1,7 +1,6 @@
 package dev.diena.fluxium.block
 
 import dev.diena.fluxium.Fluxium
-import dev.diena.fluxium.item.CustomItems
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockBehaviour
@@ -10,6 +9,8 @@ import thedarkcolour.kotlinforforge.neoforge.forge.getValue
 
 object CustomBlocks {
 	val REGISTRY = DeferredRegister.createBlocks(Fluxium.ID)
+	/** Separate item registry for block items — avoids circular init with CustomItems. */
+	val ITEM_REGISTRY = DeferredRegister.createItems(Fluxium.ID)
 
 	/**
 	 * Registers a block under [name].
@@ -19,7 +20,7 @@ object CustomBlocks {
 	 * - **Object expression** ([factory]): anonymous [Block] subclass inline.
 	 *
 	 * Set [withItem] to `true` to automatically register a companion [net.minecraft.world.item.BlockItem]
-	 * in [CustomItems.REGISTRY]; configure its [Item.Properties] via [itemConfigure].
+	 * in [ITEM_REGISTRY]; configure its [Item.Properties] via [itemConfigure].
 	 *
 	 * @param name          registry name (snake_case)
 	 * @param withItem      when `true`, registers a parallel BlockItem
@@ -37,7 +38,7 @@ object CustomBlocks {
 		factory(BlockBehaviour.Properties.of().apply(configure))
 	}.also { deferred ->
 		if (withItem) {
-			CustomItems.REGISTRY.registerSimpleBlockItem(name, deferred, Item.Properties().apply(itemConfigure))
+			ITEM_REGISTRY.registerSimpleBlockItem(name, deferred, Item.Properties().apply(itemConfigure))
 		}
 	}
 
